@@ -1,0 +1,75 @@
+/**************************************************************************
+Copyright (c) 2003 Donald Gobin
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**************************************************************************/
+
+#ifndef __MYLIB_PERSISTENTHASH_H__
+#define __MYLIB_PERSISTENTHASH_H__
+
+#include <string>
+
+// qdbm include -- see QDBM subdir
+extern "C"
+{
+#include "curia.h"
+}
+
+using namespace std;
+
+namespace MyLib
+{
+    class PersistentHash
+    {
+    public:
+        // make sure parent dir exists!
+        PersistentHash(const string& dbDir);
+        ~PersistentHash();
+        // these are thread-safe, they do not
+        // modify any internal variables. the
+        // hash (CURIA) has it's own locking mechanism.
+        void Store(const string& key, const string& value);
+        // returns true on success
+        bool Retrieve(const string& key, string& value);
+        // returns true on success
+        bool Delete(const string& key);
+        // call this when you're sure
+        // no one is using the db :)
+        // remove hash db
+        static void DeleteHash(const string& dbDir);
+    private:
+        // remove holes
+        void Compact();
+    private:
+        string dbDir;
+        CURIA* dbHandle;
+    private:
+        // disable compiler generated code
+        PersistentHash(const PersistentHash&);
+        PersistentHash& operator=(const PersistentHash&);
+    };
+}
+
+#endif
+
