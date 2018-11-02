@@ -1,6 +1,6 @@
 <HTML>
     <BODY>
-        <P><STRONG><FONT size="5">How to use this library</FONT><STRONG></P>
+        <P><STRONG><FONT size="5">How to use this library</FONT></STRONG></P>
         <P><STRONG>Mutexes</STRONG></P>
         <P>To create a mutex:<BR>
             <BR>
